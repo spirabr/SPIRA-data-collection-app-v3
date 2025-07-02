@@ -1,0 +1,123 @@
+import 'package:bloc_test/bloc_test.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:spira/feature/domain/entities/nicotine_amount_entity.dart';
+import 'package:spira/feature/presentation/cubits/data_collection/data_collection_cubit.dart';
+import 'package:spira/feature/presentation/pages/data_collection/line_of_study/smoking/electronic_smoking_page.dart';
+import 'package:spira/feature/presentation/widgets/collection_dropdown.dart';
+import 'package:spira/feature/presentation/pages/data_collection/widgets/collection_navigation_bar.dart';
+import 'package:spira/feature/presentation/pages/data_collection/widgets/collection_two_text_form_fields.dart';
+
+class MockDataCollectionCubit extends MockCubit<DataCollectionState>
+    implements DataCollectionCubit {
+  MockDataCollectionCubit() {
+    // Initialize the state with a valid DataCollectionState
+    emit(DataCollectionState());
+  }
+  // electronic smoking text fields
+  TextEditingController electronicTobaccoLoadController =
+      TextEditingController();
+  TextEditingController electronicConsumptionTimeOneController =
+      TextEditingController();
+  TextEditingController electronicConsumptionTimeTwoController =
+      TextEditingController();
+  TextEditingController electronicCessationTimeOneController =
+      TextEditingController();
+  TextEditingController electronicCessationTimeTwoController =
+      TextEditingController();
+  Future<List<NicotineAmountEntity>> get nicotineAmounts async {
+    return [
+      NicotineAmountEntity(id: 1, name: '20mg'),
+      NicotineAmountEntity(id: 2, name: '30mg'),
+      NicotineAmountEntity(id: 3, name: '50mg'),
+    ];
+  }
+}
+
+void main() {
+  group('ElectronicSmokingPage Tests', () {
+    late DataCollectionCubit dataCollectionCubit;
+
+    setUp(() {
+      dataCollectionCubit = MockDataCollectionCubit();
+    });
+
+    testWidgets('renders ElectronicSmokingPage correctly',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<DataCollectionCubit>(
+            create: (_) => dataCollectionCubit,
+            child: ElectronicSmokingPage(),
+          ),
+        ),
+      );
+
+      expect(find.text('Dados do Paciente'), findsOneWidget);
+      expect(find.text('Tabagismo - Eletrônico'), findsOneWidget);
+      expect(find.byType(CollectionTwoTextFormFields), findsNWidgets(2));
+      expect(find.byType(CollectionDropdown<NicotineAmountEntity>),
+          findsOneWidget);
+      expect(find.byType(CollectionNavigationBar), findsOneWidget);
+    });
+
+    testWidgets('accepts user input', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<DataCollectionCubit>(
+            create: (_) => dataCollectionCubit,
+            child: ElectronicSmokingPage(),
+          ),
+        ),
+      );
+
+      await tester.enterText(find.byType(TextFormField).first, '10');
+      await tester.enterText(find.byType(TextFormField).last, '20');
+
+      expect(find.text('10'), findsOneWidget);
+      expect(find.text('20'), findsOneWidget);
+    });
+
+    testWidgets('validates form and calls nextStep on valid input',
+        (WidgetTester tester) async {
+      when(() => dataCollectionCubit.nextStep()).thenReturn(null);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<DataCollectionCubit>(
+            create: (_) => dataCollectionCubit,
+            child: ElectronicSmokingPage(),
+          ),
+        ),
+      );
+
+      await tester.enterText(find.byType(TextFormField).first, '10');
+      await tester.enterText(find.byType(TextFormField).last, '20');
+      await tester.tap(find.text('Next'));
+      await tester.pump();
+
+      verify(() => dataCollectionCubit.nextStep()).called(1);
+    });
+
+    testWidgets('calls previousStep on back button press',
+        (WidgetTester tester) async {
+      when(() => dataCollectionCubit.previousStep()).thenReturn(null);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<DataCollectionCubit>(
+            create: (_) => dataCollectionCubit,
+            child: ElectronicSmokingPage(),
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Back'));
+      await tester.pump();
+
+      verify(() => dataCollectionCubit.previousStep()).called(1);
+    });
+  });
+}
