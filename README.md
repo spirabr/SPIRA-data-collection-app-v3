@@ -9,6 +9,7 @@ Essas instruções permitirão que você obtenha uma cópia do projeto em opera�
 ### 📋 Pré-requisitos
 
 Android Studio 2023.2.1 (Iguana) ou mais recente. O download pode ser feito [neste link](https://developer.android.com/studio/install)
+
 Flutter na versão 3.19.6. O download pode ser feito [neste link](https://docs.flutter.dev/get-started/install)
 
 ### 🔧 Instalação
