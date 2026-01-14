@@ -63,7 +63,7 @@ class ElectronicSmokingPage extends StatelessWidget {
                   textEditingController: context
                       .read<DataCollectionCubit>()
                       .electronicTobaccoLoadController,
-                  inputType: InputType.decimal,
+                  inputType: InputType.number,
                   maxLength: 6,
                 ),
                 const SizedBox(height: 16),
