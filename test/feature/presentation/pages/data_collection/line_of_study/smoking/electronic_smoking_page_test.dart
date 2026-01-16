@@ -9,6 +9,7 @@ import 'package:spira/feature/presentation/pages/data_collection/line_of_study/s
 import 'package:spira/feature/presentation/widgets/collection_dropdown.dart';
 import 'package:spira/feature/presentation/pages/data_collection/widgets/collection_navigation_bar.dart';
 import 'package:spira/feature/presentation/pages/data_collection/widgets/collection_two_text_form_fields.dart';
+import 'package:spira/feature/presentation/widgets/collection_text_form_field.dart';
 
 class MockDataCollectionCubit extends MockCubit<DataCollectionState>
     implements DataCollectionCubit {
@@ -142,7 +143,9 @@ void main() {
             ),
           );
 
-          final campoBaforada = find.byType(TextFormField).first;
+          final campoBaforada = find
+              .byType(TextFormField)
+              .first;
 
           await tester.enterText(campoBaforada, '1234567');
           await tester.pump();
@@ -150,7 +153,42 @@ void main() {
           expect(find.text('1234567'), findsNothing);
           expect(find.text('123'), findsNothing);
           expect(find.text('123456'), findsOneWidget);
+        });
 
+    testWidgets('Input de adicionar Monóxido de Carbono deve existir',
+            (WidgetTester tester) async {
+          await tester.pumpWidget(
+            MaterialApp(
+              home: BlocProvider<DataCollectionCubit>(
+                create: (_) => dataCollectionCubit,
+                child: ElectronicSmokingPage(),
+              ),
+            ),
+          );
+
+          expect(find.byType(CollectionTextFormField), findsNWidgets(2));
+        });
+
+    testWidgets('Input de COex deve aceitar apenas números e virgula',
+            (WidgetTester tester) async {
+          await tester.pumpWidget(
+            MaterialApp(
+              home: BlocProvider<DataCollectionCubit>(
+                create: (_) => dataCollectionCubit,
+                child: ElectronicSmokingPage(),
+              ),
+            ),
+          );
+
+          final campoMonoxido = find.byType(TextFormField).last;
+
+          await tester.enterText(campoMonoxido, '12eA3,l456');
+          await tester.pump();
+
+          expect(find.text('12eA3,l456'), findsNothing);
+          expect(find.text('123456'), findsNothing);
+          expect(find.text('123,456'), findsNothing);
+          expect(find.text('123,45'), findsOneWidget);
         });
   });
 }
