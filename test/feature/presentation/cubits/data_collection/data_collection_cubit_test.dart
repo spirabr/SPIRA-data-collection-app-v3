@@ -76,8 +76,6 @@ void main(){
       expect(savedPatient.smokingData?.carbonMonoxide, 25.5);
     });
 
-
-
   });
 
 }
