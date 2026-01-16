@@ -20,15 +20,17 @@ class MockDataCollectionCubit extends MockCubit<DataCollectionState>
 
   // electronic smoking text fields
   TextEditingController electronicTobaccoLoadController =
-  TextEditingController();
+      TextEditingController();
+  TextEditingController electronicCarbonMonoxideController =
+      TextEditingController();
   TextEditingController electronicConsumptionTimeOneController =
-  TextEditingController();
+      TextEditingController();
   TextEditingController electronicConsumptionTimeTwoController =
-  TextEditingController();
+      TextEditingController();
   TextEditingController electronicCessationTimeOneController =
-  TextEditingController();
+      TextEditingController();
   TextEditingController electronicCessationTimeTwoController =
-  TextEditingController();
+      TextEditingController();
 
   Future<List<NicotineAmountEntity>> get nicotineAmounts async {
     return [
@@ -49,23 +51,23 @@ void main() {
     });
 
     testWidgets('renders ElectronicSmokingPage correctly',
-            (WidgetTester tester) async {
-          await tester.pumpWidget(
-            MaterialApp(
-              home: BlocProvider<DataCollectionCubit>(
-                create: (_) => dataCollectionCubit,
-                child: ElectronicSmokingPage(),
-              ),
-            ),
-          );
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<DataCollectionCubit>(
+            create: (_) => dataCollectionCubit,
+            child: ElectronicSmokingPage(),
+          ),
+        ),
+      );
 
-          expect(find.text('Dados do Paciente'), findsOneWidget);
-          expect(find.text('Tabagismo - Eletrônico'), findsOneWidget);
-          expect(find.byType(CollectionTwoTextFormFields), findsNWidgets(2));
-          expect(find.byType(CollectionDropdown<NicotineAmountEntity>),
-              findsOneWidget);
-          expect(find.byType(CollectionNavigationBar), findsOneWidget);
-        });
+      expect(find.text('Dados do Paciente'), findsOneWidget);
+      expect(find.text('Tabagismo - Eletrônico'), findsOneWidget);
+      expect(find.byType(CollectionTwoTextFormFields), findsNWidgets(2));
+      expect(find.byType(CollectionDropdown<NicotineAmountEntity>),
+          findsOneWidget);
+      expect(find.byType(CollectionNavigationBar), findsOneWidget);
+    });
 
     testWidgets('accepts user input', (WidgetTester tester) async {
       await tester.pumpWidget(
@@ -77,118 +79,107 @@ void main() {
         ),
       );
 
-      await tester.enterText(find
-          .byType(TextFormField)
-          .first, '10');
-      await tester.enterText(find
-          .byType(TextFormField)
-          .last, '20');
+      await tester.enterText(find.byType(TextFormField).first, '10');
+      await tester.enterText(find.byType(TextFormField).last, '20');
 
       expect(find.text('10'), findsOneWidget);
       expect(find.text('20'), findsOneWidget);
     });
 
     testWidgets('validates form and calls nextStep on valid input',
-            (WidgetTester tester) async {
-          when(() => dataCollectionCubit.nextStep()).thenReturn(null);
+        (WidgetTester tester) async {
+      when(() => dataCollectionCubit.nextStep()).thenReturn(null);
 
-          await tester.pumpWidget(
-            MaterialApp(
-              home: BlocProvider<DataCollectionCubit>(
-                create: (_) => dataCollectionCubit,
-                child: ElectronicSmokingPage(),
-              ),
-            ),
-          );
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<DataCollectionCubit>(
+            create: (_) => dataCollectionCubit,
+            child: ElectronicSmokingPage(),
+          ),
+        ),
+      );
 
-          await tester.enterText(find
-              .byType(TextFormField)
-              .first, '10');
-          await tester.enterText(find
-              .byType(TextFormField)
-              .last, '20');
-          await tester.tap(find.text('Next'));
-          await tester.pump();
+      await tester.enterText(find.byType(TextFormField).first, '10');
+      await tester.enterText(find.byType(TextFormField).last, '20');
+      await tester.tap(find.text('Next'));
+      await tester.pump();
 
-          verify(() => dataCollectionCubit.nextStep()).called(1);
-        });
+      verify(() => dataCollectionCubit.nextStep()).called(1);
+    });
 
     testWidgets('calls previousStep on back button press',
-            (WidgetTester tester) async {
-          when(() => dataCollectionCubit.previousStep()).thenReturn(null);
+        (WidgetTester tester) async {
+      when(() => dataCollectionCubit.previousStep()).thenReturn(null);
 
-          await tester.pumpWidget(
-            MaterialApp(
-              home: BlocProvider<DataCollectionCubit>(
-                create: (_) => dataCollectionCubit,
-                child: ElectronicSmokingPage(),
-              ),
-            ),
-          );
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<DataCollectionCubit>(
+            create: (_) => dataCollectionCubit,
+            child: ElectronicSmokingPage(),
+          ),
+        ),
+      );
 
-          await tester.tap(find.text('Back'));
-          await tester.pump();
+      await tester.tap(find.text('Back'));
+      await tester.pump();
 
-          verify(() => dataCollectionCubit.previousStep()).called(1);
-        });
+      verify(() => dataCollectionCubit.previousStep()).called(1);
+    });
 
     testWidgets('The first input should only accept 6 numeric digits',
-            (WidgetTester tester) async {
-          await tester.pumpWidget(
-            MaterialApp(
-                home: BlocProvider<DataCollectionCubit>(
-                  create: (_) => dataCollectionCubit,
-                  child: ElectronicSmokingPage(),
-                )
-            ),
-          );
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+            home: BlocProvider<DataCollectionCubit>(
+          create: (_) => dataCollectionCubit,
+          child: ElectronicSmokingPage(),
+        )),
+      );
 
-          final campoBaforada = find
-              .byType(TextFormField)
-              .first;
+      final campoBaforada = find.byType(TextFormField).first;
 
-          await tester.enterText(campoBaforada, '1234567');
-          await tester.pump();
+      await tester.enterText(campoBaforada, '1234567');
+      await tester.pump();
 
-          expect(find.text('1234567'), findsNothing);
-          expect(find.text('123'), findsNothing);
-          expect(find.text('123456'), findsOneWidget);
-        });
+      expect(find.text('1234567'), findsNothing);
+      expect(find.text('123'), findsNothing);
+      expect(find.text('123456'), findsOneWidget);
+    });
 
-    testWidgets('Input de adicionar Monóxido de Carbono deve existir',
-            (WidgetTester tester) async {
-          await tester.pumpWidget(
-            MaterialApp(
-              home: BlocProvider<DataCollectionCubit>(
-                create: (_) => dataCollectionCubit,
-                child: ElectronicSmokingPage(),
-              ),
-            ),
-          );
+    testWidgets('Input de adicionar Moxido de Carbono deve existir',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<DataCollectionCubit>(
+            create: (_) => dataCollectionCubit,
+            child: ElectronicSmokingPage(),
+          ),
+        ),
+      );
 
-          expect(find.byType(CollectionTextFormField), findsNWidgets(2));
-        });
+      expect(find.byType(CollectionTextFormField), findsNWidgets(2));
+    });
 
-    testWidgets('Input de COex deve aceitar apenas números e virgula',
-            (WidgetTester tester) async {
-          await tester.pumpWidget(
-            MaterialApp(
-              home: BlocProvider<DataCollectionCubit>(
-                create: (_) => dataCollectionCubit,
-                child: ElectronicSmokingPage(),
-              ),
-            ),
-          );
+    testWidgets('Input de COex deve aceitar apenas numeros e virgula',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<DataCollectionCubit>(
+            create: (_) => dataCollectionCubit,
+            child: ElectronicSmokingPage(),
+          ),
+        ),
+      );
 
-          final campoMonoxido = find.byType(TextFormField).last;
+      final campoMonoxido = find.byKey(const Key('Input_carbono'));
 
-          await tester.enterText(campoMonoxido, '12eA3,l456');
-          await tester.pump();
+      await tester.enterText(campoMonoxido, '12eA3,l456');
+      await tester.pump();
 
-          expect(find.text('12eA3,l456'), findsNothing);
-          expect(find.text('123456'), findsNothing);
-          expect(find.text('123,456'), findsNothing);
-          expect(find.text('123,45'), findsOneWidget);
-        });
+      expect(find.text('12eA3,l456'), findsNothing);
+      expect(find.text('123456'), findsNothing);
+      expect(find.text('123,456'), findsNothing);
+      expect(find.text('123,45'), findsOneWidget);
+    });
   });
 }

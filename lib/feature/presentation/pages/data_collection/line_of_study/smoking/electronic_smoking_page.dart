@@ -67,6 +67,16 @@ class ElectronicSmokingPage extends StatelessWidget {
                   maxLength: 6,
                 ),
                 const SizedBox(height: 16),
+                CollectionTextFormField(
+                  key: const Key('Input_carbono'),
+                  label: "Monóxido de Carbono (COex em ppm)",
+                  required: true,
+                  hintText: "Escreva a quantidade",
+                  textEditingController: context.read<DataCollectionCubit>().electronicCarbonMonoxideController,
+                  inputType: InputType.decimal,
+                  maxLength: 6,
+                ),
+                const SizedBox(height: 16),
                 _buildNicotineAmountInputSection(context),
                 const SizedBox(height: 16),
                 CollectionTwoTextFormFields(
