@@ -172,7 +172,6 @@ void main() {
 
     testWidgets('Input de COex deve aceitar apenas numeros e virgula',
         (WidgetTester tester) async {
-
       final stateEletronico = DataCollectionState()
           .copyWith(smokingType: SmokingEntity(id: 2, name: 'Eletrônico'));
 
@@ -197,5 +196,49 @@ void main() {
       expect(find.text('123,456'), findsNothing);
       expect(find.text('123,45'), findsOneWidget);
     });
+
+    testWidgets('Quando o usuario escolher 1 (cigarro tradicional) o campo COex nao deve aparecer',
+        (WidgetTester tester) async {
+
+      final stateEletronico = DataCollectionState()
+          .copyWith(smokingType: SmokingEntity(id: 1, name: 'Eletrônico'));
+
+      when(() => dataCollectionCubit.state).thenReturn(stateEletronico);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<DataCollectionCubit>(
+            create: (_) => dataCollectionCubit,
+            child: ElectronicSmokingPage(),
+          ),
+        ),
+      );
+
+      await tester.pump();
+
+      expect(find.byType(CollectionTextFormField), findsOneWidget);
+    });
+
+    testWidgets('Quando o usuario escolher 3 (ambos) o campo COex nao deve aparecer',
+            (WidgetTester tester) async {
+
+          final stateEletronico = DataCollectionState()
+              .copyWith(smokingType: SmokingEntity(id: 3, name: 'Eletrônico'));
+
+          when(() => dataCollectionCubit.state).thenReturn(stateEletronico);
+
+          await tester.pumpWidget(
+            MaterialApp(
+              home: BlocProvider<DataCollectionCubit>(
+                create: (_) => dataCollectionCubit,
+                child: ElectronicSmokingPage(),
+              ),
+            ),
+          );
+
+          await tester.pump();
+
+          expect(find.byType(CollectionTextFormField), findsOneWidget);
+        });
   });
 }
