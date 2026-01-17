@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -72,6 +73,8 @@ class DataCollectionCubit extends Cubit<DataCollectionState> {
 
   // electronic smoking text fields
   TextEditingController electronicTobaccoLoadController =
+      TextEditingController();
+  TextEditingController electronicCarbonMonoxideController =
       TextEditingController();
   TextEditingController electronicConsumptionTimeOneController =
       TextEditingController();
@@ -257,7 +260,10 @@ class DataCollectionCubit extends Cubit<DataCollectionState> {
                       isControlStep()
                   ? double.tryParse(traditionalCarbonMonoxideController.text
                       .replaceAll(",", "."))
-                  : null,
+                  : isElectronicSmoking()
+                      ? double.tryParse(electronicCarbonMonoxideController.text
+                          .replaceAll(",", "."))
+                      : null,
               tobaccoLoad: isTraditionalSmoking()
                   ? double.tryParse(traditionalTobaccoLoadController.text
                       .replaceAll(",", "."))
