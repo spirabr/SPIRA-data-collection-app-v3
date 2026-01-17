@@ -11,6 +11,8 @@ import 'package:spira/feature/presentation/pages/data_collection/widgets/collect
 import 'package:spira/feature/presentation/pages/data_collection/widgets/collection_two_text_form_fields.dart';
 import 'package:spira/feature/presentation/widgets/collection_text_form_field.dart';
 
+import 'package:spira/feature/domain/entities/smoking_entity.dart';
+
 class MockDataCollectionCubit extends MockCubit<DataCollectionState>
     implements DataCollectionCubit {
   MockDataCollectionCubit() {
@@ -148,20 +150,34 @@ void main() {
 
     testWidgets('Input de adicionar Moxido de Carbono deve existir',
         (WidgetTester tester) async {
+      //forçando o estado ser de cigarro eletronico para ser desenhado o campo de COex
+      final stateEletronico = DataCollectionState()
+          .copyWith(smokingType: SmokingEntity(id: 2, name: 'Eletrônico'));
+
+      when(() => dataCollectionCubit.state).thenReturn(stateEletronico);
+
       await tester.pumpWidget(
         MaterialApp(
-          home: BlocProvider<DataCollectionCubit>(
-            create: (_) => dataCollectionCubit,
+          home: BlocProvider<DataCollectionCubit>.value(
+            value: dataCollectionCubit,
             child: ElectronicSmokingPage(),
           ),
         ),
       );
+
+      await tester.pump();
 
       expect(find.byType(CollectionTextFormField), findsNWidgets(2));
     });
 
     testWidgets('Input de COex deve aceitar apenas numeros e virgula',
         (WidgetTester tester) async {
+
+      final stateEletronico = DataCollectionState()
+          .copyWith(smokingType: SmokingEntity(id: 2, name: 'Eletrônico'));
+
+      when(() => dataCollectionCubit.state).thenReturn(stateEletronico);
+
       await tester.pumpWidget(
         MaterialApp(
           home: BlocProvider<DataCollectionCubit>(
