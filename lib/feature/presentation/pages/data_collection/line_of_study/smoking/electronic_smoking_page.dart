@@ -21,107 +21,125 @@ class ElectronicSmokingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Container(
-          width: double.maxFinite,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Form(
-            key: _formKey,
-            child: ListView(
-              children: [
-                Text(
-                  getTitleByOrigin(),
-                  style: const TextStyle(
-                    color: AppColors.neutral800,
-                    fontSize: 22,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  getSubtitleByOrigin(),
-                  style: const TextStyle(
-                    color: AppColors.neutral800,
-                    fontSize: 16,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                getSmokingOptionWidget(),
-                CollectionTextFormField(
-                  label: "Carga Tabágica",
-                  required: smokingFrom == SmokingFromOption.asthma ||
-                          smokingFrom == SmokingFromOption.control
-                      ? false
-                      : true,
-                  hintText: "Quantidade baforadas / dia",
-                  textEditingController: context
-                      .read<DataCollectionCubit>()
-                      .electronicTobaccoLoadController,
-                  inputType: InputType.number,
-                  maxLength: 6,
-                ),
-                const SizedBox(height: 16),
-                _buildNicotineAmountInputSection(context),
-                const SizedBox(height: 16),
-                CollectionTwoTextFormFields(
-                  label: "Tempo de consumo",
-                  required: smokingFrom == SmokingFromOption.asthma ||
-                          smokingFrom == SmokingFromOption.control
-                      ? false
-                      : true,
-                  firstTextEditingController: context
-                      .read<DataCollectionCubit>()
-                      .electronicConsumptionTimeOneController,
-                  secondTextEditingController: context
-                      .read<DataCollectionCubit>()
-                      .electronicConsumptionTimeTwoController,
-                  twoTextFieldsType: TwoTextFieldsType.time,
-                  firstMaxLength: 2,
-                  secondMaxLength: 2,
-                ),
-                if (smokingFrom == SmokingFromOption.asthma ||
-                    smokingFrom == SmokingFromOption.control)
-                  Flex(
-                    direction: Axis.vertical,
-                    children: [
+    return BlocBuilder<DataCollectionCubit, DataCollectionState>(
+      builder: (context, state) {
+        return SafeArea(
+          child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: Container(
+              width: double.maxFinite,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  children: [
+                    Text(
+                      getTitleByOrigin(),
+                      style: const TextStyle(
+                        color: AppColors.neutral800,
+                        fontSize: 22,
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      getSubtitleByOrigin(),
+                      style: const TextStyle(
+                        color: AppColors.neutral800,
+                        fontSize: 16,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    getSmokingOptionWidget(),
+                    CollectionTextFormField(
+                      label: "Carga Tabágica",
+                      required: smokingFrom == SmokingFromOption.asthma ||
+                              smokingFrom == SmokingFromOption.control
+                          ? false
+                          : true,
+                      hintText: "Quantidade baforadas / dia",
+                      textEditingController: context
+                          .read<DataCollectionCubit>()
+                          .electronicTobaccoLoadController,
+                      inputType: InputType.number,
+                      maxLength: 6,
+                    ),
+                    if (state.smokingType?.id == 2) ...[
                       const SizedBox(height: 16),
-                      CollectionTwoTextFormFields(
-                        label: "Tempo de cessação",
-                        required: smokingFrom == SmokingFromOption.asthma ||
-                                smokingFrom == SmokingFromOption.control
-                            ? false
-                            : true,
-                        firstTextEditingController: context
+                      CollectionTextFormField(
+                        key: const Key('Input_carbono'),
+                        label: "Monóxido de Carbono (COex em ppm)",
+                        required: true,
+                        hintText: "Escreva a quantidade",
+                        textEditingController: context
                             .read<DataCollectionCubit>()
-                            .electronicCessationTimeOneController,
-                        secondTextEditingController: context
-                            .read<DataCollectionCubit>()
-                            .electronicCessationTimeTwoController,
-                        twoTextFieldsType: TwoTextFieldsType.time,
-                        firstMaxLength: 2,
-                        secondMaxLength: 2,
+                            .electronicCarbonMonoxideController,
+                        inputType: InputType.decimal,
+                        maxLength: 6,
                       ),
                     ],
-                  ),
-                const SizedBox(height: 4)
-              ],
+                    const SizedBox(height: 16),
+                    _buildNicotineAmountInputSection(context),
+                    const SizedBox(height: 16),
+                    CollectionTwoTextFormFields(
+                      label: "Tempo de consumo",
+                      required: smokingFrom == SmokingFromOption.asthma ||
+                              smokingFrom == SmokingFromOption.control
+                          ? false
+                          : true,
+                      firstTextEditingController: context
+                          .read<DataCollectionCubit>()
+                          .electronicConsumptionTimeOneController,
+                      secondTextEditingController: context
+                          .read<DataCollectionCubit>()
+                          .electronicConsumptionTimeTwoController,
+                      twoTextFieldsType: TwoTextFieldsType.time,
+                      firstMaxLength: 2,
+                      secondMaxLength: 2,
+                    ),
+                    if (smokingFrom == SmokingFromOption.asthma ||
+                        smokingFrom == SmokingFromOption.control)
+                      Flex(
+                        direction: Axis.vertical,
+                        children: [
+                          const SizedBox(height: 16),
+                          CollectionTwoTextFormFields(
+                            label: "Tempo de cessação",
+                            required: smokingFrom == SmokingFromOption.asthma ||
+                                    smokingFrom == SmokingFromOption.control
+                                ? false
+                                : true,
+                            firstTextEditingController: context
+                                .read<DataCollectionCubit>()
+                                .electronicCessationTimeOneController,
+                            secondTextEditingController: context
+                                .read<DataCollectionCubit>()
+                                .electronicCessationTimeTwoController,
+                            twoTextFieldsType: TwoTextFieldsType.time,
+                            firstMaxLength: 2,
+                            secondMaxLength: 2,
+                          ),
+                        ],
+                      ),
+                    const SizedBox(height: 4)
+                  ],
+                ),
+              ),
             ),
+            bottomNavigationBar: CollectionNavigationBar(onPressedNext: () {
+              if (_formKey.currentState!.validate()) {
+                context.read<DataCollectionCubit>().nextStep();
+              }
+            }, onPressedBack: () {
+              context.read<DataCollectionCubit>().previousStep();
+            }),
           ),
-        ),
-        bottomNavigationBar: CollectionNavigationBar(onPressedNext: () {
-          if (_formKey.currentState!.validate()) {
-            context.read<DataCollectionCubit>().nextStep();
-          }
-        }, onPressedBack: () {
-          context.read<DataCollectionCubit>().previousStep();
-        }),
-      ),
+        );
+      },
     );
   }
 

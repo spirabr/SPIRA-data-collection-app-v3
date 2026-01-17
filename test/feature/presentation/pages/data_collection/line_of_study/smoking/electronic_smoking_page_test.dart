@@ -9,6 +9,9 @@ import 'package:spira/feature/presentation/pages/data_collection/line_of_study/s
 import 'package:spira/feature/presentation/widgets/collection_dropdown.dart';
 import 'package:spira/feature/presentation/pages/data_collection/widgets/collection_navigation_bar.dart';
 import 'package:spira/feature/presentation/pages/data_collection/widgets/collection_two_text_form_fields.dart';
+import 'package:spira/feature/presentation/widgets/collection_text_form_field.dart';
+
+import 'package:spira/feature/domain/entities/smoking_entity.dart';
 
 class MockDataCollectionCubit extends MockCubit<DataCollectionState>
     implements DataCollectionCubit {
@@ -19,15 +22,17 @@ class MockDataCollectionCubit extends MockCubit<DataCollectionState>
 
   // electronic smoking text fields
   TextEditingController electronicTobaccoLoadController =
-  TextEditingController();
+      TextEditingController();
+  TextEditingController electronicCarbonMonoxideController =
+      TextEditingController();
   TextEditingController electronicConsumptionTimeOneController =
-  TextEditingController();
+      TextEditingController();
   TextEditingController electronicConsumptionTimeTwoController =
-  TextEditingController();
+      TextEditingController();
   TextEditingController electronicCessationTimeOneController =
-  TextEditingController();
+      TextEditingController();
   TextEditingController electronicCessationTimeTwoController =
-  TextEditingController();
+      TextEditingController();
 
   Future<List<NicotineAmountEntity>> get nicotineAmounts async {
     return [
@@ -48,23 +53,23 @@ void main() {
     });
 
     testWidgets('renders ElectronicSmokingPage correctly',
-            (WidgetTester tester) async {
-          await tester.pumpWidget(
-            MaterialApp(
-              home: BlocProvider<DataCollectionCubit>(
-                create: (_) => dataCollectionCubit,
-                child: ElectronicSmokingPage(),
-              ),
-            ),
-          );
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<DataCollectionCubit>(
+            create: (_) => dataCollectionCubit,
+            child: ElectronicSmokingPage(),
+          ),
+        ),
+      );
 
-          expect(find.text('Dados do Paciente'), findsOneWidget);
-          expect(find.text('Tabagismo - Eletrônico'), findsOneWidget);
-          expect(find.byType(CollectionTwoTextFormFields), findsNWidgets(2));
-          expect(find.byType(CollectionDropdown<NicotineAmountEntity>),
-              findsOneWidget);
-          expect(find.byType(CollectionNavigationBar), findsOneWidget);
-        });
+      expect(find.text('Dados do Paciente'), findsOneWidget);
+      expect(find.text('Tabagismo - Eletrônico'), findsOneWidget);
+      expect(find.byType(CollectionTwoTextFormFields), findsNWidgets(2));
+      expect(find.byType(CollectionDropdown<NicotineAmountEntity>),
+          findsOneWidget);
+      expect(find.byType(CollectionNavigationBar), findsOneWidget);
+    });
 
     testWidgets('accepts user input', (WidgetTester tester) async {
       await tester.pumpWidget(
@@ -76,45 +81,151 @@ void main() {
         ),
       );
 
-      await tester.enterText(find
-          .byType(TextFormField)
-          .first, '10');
-      await tester.enterText(find
-          .byType(TextFormField)
-          .last, '20');
+      await tester.enterText(find.byType(TextFormField).first, '10');
+      await tester.enterText(find.byType(TextFormField).last, '20');
 
       expect(find.text('10'), findsOneWidget);
       expect(find.text('20'), findsOneWidget);
     });
 
     testWidgets('validates form and calls nextStep on valid input',
-            (WidgetTester tester) async {
-          when(() => dataCollectionCubit.nextStep()).thenReturn(null);
+        (WidgetTester tester) async {
+      when(() => dataCollectionCubit.nextStep()).thenReturn(null);
 
-          await tester.pumpWidget(
-            MaterialApp(
-              home: BlocProvider<DataCollectionCubit>(
-                create: (_) => dataCollectionCubit,
-                child: ElectronicSmokingPage(),
-              ),
-            ),
-          );
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<DataCollectionCubit>(
+            create: (_) => dataCollectionCubit,
+            child: ElectronicSmokingPage(),
+          ),
+        ),
+      );
 
-          await tester.enterText(find
-              .byType(TextFormField)
-              .first, '10');
-          await tester.enterText(find
-              .byType(TextFormField)
-              .last, '20');
-          await tester.tap(find.text('Next'));
-          await tester.pump();
+      await tester.enterText(find.byType(TextFormField).first, '10');
+      await tester.enterText(find.byType(TextFormField).last, '20');
+      await tester.tap(find.text('Next'));
+      await tester.pump();
 
-          verify(() => dataCollectionCubit.nextStep()).called(1);
-        });
+      verify(() => dataCollectionCubit.nextStep()).called(1);
+    });
 
     testWidgets('calls previousStep on back button press',
+        (WidgetTester tester) async {
+      when(() => dataCollectionCubit.previousStep()).thenReturn(null);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<DataCollectionCubit>(
+            create: (_) => dataCollectionCubit,
+            child: ElectronicSmokingPage(),
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Back'));
+      await tester.pump();
+
+      verify(() => dataCollectionCubit.previousStep()).called(1);
+    });
+
+    testWidgets('The first input should only accept 6 numeric digits',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+            home: BlocProvider<DataCollectionCubit>(
+          create: (_) => dataCollectionCubit,
+          child: ElectronicSmokingPage(),
+        )),
+      );
+
+      final campoBaforada = find.byType(TextFormField).first;
+
+      await tester.enterText(campoBaforada, '1234567');
+      await tester.pump();
+
+      expect(find.text('1234567'), findsNothing);
+      expect(find.text('123'), findsNothing);
+      expect(find.text('123456'), findsOneWidget);
+    });
+
+    testWidgets('Input de adicionar Moxido de Carbono deve existir',
+        (WidgetTester tester) async {
+      //forçando o estado ser de cigarro eletronico para ser desenhado o campo de COex
+      final stateEletronico = DataCollectionState()
+          .copyWith(smokingType: SmokingEntity(id: 2, name: 'Eletrônico'));
+
+      when(() => dataCollectionCubit.state).thenReturn(stateEletronico);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<DataCollectionCubit>.value(
+            value: dataCollectionCubit,
+            child: ElectronicSmokingPage(),
+          ),
+        ),
+      );
+
+      await tester.pump();
+
+      expect(find.byType(CollectionTextFormField), findsNWidgets(2));
+    });
+
+    testWidgets('Input de COex deve aceitar apenas numeros e virgula',
+        (WidgetTester tester) async {
+      final stateEletronico = DataCollectionState()
+          .copyWith(smokingType: SmokingEntity(id: 2, name: 'Eletrônico'));
+
+      when(() => dataCollectionCubit.state).thenReturn(stateEletronico);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<DataCollectionCubit>(
+            create: (_) => dataCollectionCubit,
+            child: ElectronicSmokingPage(),
+          ),
+        ),
+      );
+
+      final campoMonoxido = find.byKey(const Key('Input_carbono'));
+
+      await tester.enterText(campoMonoxido, '12eA3,l456');
+      await tester.pump();
+
+      expect(find.text('12eA3,l456'), findsNothing);
+      expect(find.text('123456'), findsNothing);
+      expect(find.text('123,456'), findsNothing);
+      expect(find.text('123,45'), findsOneWidget);
+    });
+
+    testWidgets('Quando o usuario escolher 1 (cigarro tradicional) o campo COex nao deve aparecer',
+        (WidgetTester tester) async {
+
+      final stateEletronico = DataCollectionState()
+          .copyWith(smokingType: SmokingEntity(id: 1, name: 'Eletrônico'));
+
+      when(() => dataCollectionCubit.state).thenReturn(stateEletronico);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<DataCollectionCubit>(
+            create: (_) => dataCollectionCubit,
+            child: ElectronicSmokingPage(),
+          ),
+        ),
+      );
+
+      await tester.pump();
+
+      expect(find.byType(CollectionTextFormField), findsOneWidget);
+    });
+
+    testWidgets('Quando o usuario escolher 3 (ambos) o campo COex nao deve aparecer',
             (WidgetTester tester) async {
-          when(() => dataCollectionCubit.previousStep()).thenReturn(null);
+
+          final stateEletronico = DataCollectionState()
+              .copyWith(smokingType: SmokingEntity(id: 3, name: 'Eletrônico'));
+
+          when(() => dataCollectionCubit.state).thenReturn(stateEletronico);
 
           await tester.pumpWidget(
             MaterialApp(
@@ -125,32 +236,9 @@ void main() {
             ),
           );
 
-          await tester.tap(find.text('Back'));
           await tester.pump();
 
-          verify(() => dataCollectionCubit.previousStep()).called(1);
-        });
-
-    testWidgets('The first input should only accept 6 numeric digits',
-            (WidgetTester tester) async {
-          await tester.pumpWidget(
-            MaterialApp(
-                home: BlocProvider<DataCollectionCubit>(
-                  create: (_) => dataCollectionCubit,
-                  child: ElectronicSmokingPage(),
-                )
-            ),
-          );
-
-          final campoBaforada = find.byType(TextFormField).first;
-
-          await tester.enterText(campoBaforada, '1234567');
-          await tester.pump();
-
-          expect(find.text('1234567'), findsNothing);
-          expect(find.text('123'), findsNothing);
-          expect(find.text('123456'), findsOneWidget);
-
+          expect(find.byType(CollectionTextFormField), findsOneWidget);
         });
   });
 }
