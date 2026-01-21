@@ -1,3 +1,4 @@
+import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:spira/feature/core/enums.dart';
 import 'package:spira/feature/data/datasources/local/local_data_source.dart';
 import 'package:spira/feature/data/model/request/patient_model.dart';
 import 'package:spira/feature/data/services/connectivity_service.dart';
+import 'package:spira/feature/domain/entities/comorbidity_entity.dart';
 import 'package:spira/feature/domain/entities/line_of_study_entity.dart';
 import 'package:spira/feature/domain/entities/smoking_entity.dart';
 import 'package:spira/feature/presentation/cubits/data_collection/data_collection_cubit.dart';
@@ -99,6 +101,67 @@ void main() {
       final savedPatient = capturedCall.captured.first as PatientModel;
 
       expect(savedPatient.smokingData?.carbonMonoxide, 25.5);
+    });
+  });
+
+  group('Teste de novas comorbidades', () {
+    test('Deve conter as novas comorbidades na lista', () async {
+      when(() => mockLocalDataSource.getComorbidities())
+          .thenAnswer((_) async => []);
+
+      final listaFinal = await cubit.comorbidities;
+
+      expect(listaFinal.any((c) => c.name == 'Doença coronariana'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'Infarto agudo do miocárdio'),
+          isTrue);
+      expect(listaFinal.any((c) => c.name == 'Dislipidemia'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'Diabetes insulino dependente'),
+          isTrue);
+      expect(
+          listaFinal.any((c) => c.name == 'Diabetes não-insulino dependente'),
+          isTrue);
+      expect(listaFinal.any((c) => c.name == 'Convulsão'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'AVC'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'Doença Tireoide'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'Insuficiência cardíaca'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'Arritmia'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'Insuficiência renal'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'Doença valvar'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'Neoplasia'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'DPOC'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'Asma Brônquica'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'Síndrome dispéptica'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'Doença vascular'), isTrue);
+    });
+
+    test(
+        'As novas comorbidades devem ser salvas corretamentes na entidade paciente',
+        () async {
+
+      when(() => mockLocalDataSource.insertPatient(any(), any(), any(), any(),
+          any(), any(), any(), any(), any(), any())).thenAnswer((_) async => 1);
+
+      final dummyAudio = RecordedAudioEntity(duration: 0, path: 'dummy_path');
+      cubit.setAmbientNoisePath(dummyAudio);
+      cubit.setSustentainedVowelPath(dummyAudio);
+      cubit.setRhymePath(dummyAudio);
+
+      cubit.setComorbidities([
+        ComorbidityEntity(id: 7, name: 'Doença coronariana'),
+        ComorbidityEntity(id: 8, name: 'Infarto agudo do miocárdio'),
+      ]);
+
+      await cubit.submitCollectionData();
+
+      final capturedCalls = verify(() => mockLocalDataSource.insertPatient(
+          captureAny(),
+          any(), any(), any(), any(), any(), any(), any(), any(), any()
+      )).captured;
+
+      final pacienteEnviado = capturedCalls.first as PatientModel;
+
+      expect(pacienteEnviado.comorbidityIds, contains(7));
+      expect(pacienteEnviado.comorbidityIds, contains(8));
     });
   });
 }
