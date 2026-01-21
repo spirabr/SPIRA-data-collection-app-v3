@@ -147,8 +147,23 @@ void main() {
       cubit.setRhymePath(dummyAudio);
 
       cubit.setComorbidities([
-        ComorbidityEntity(id: 7, name: 'Doença coronariana'),
-        ComorbidityEntity(id: 8, name: 'Infarto agudo do miocárdio'),
+        ComorbidityEntity(id: 7, name: 'doença coronariana'),
+        ComorbidityEntity(id: 8, name: 'infarto agudo do miocárdio'),
+        ComorbidityEntity(id: 9, name: 'dislipidemia'),
+        ComorbidityEntity(id: 10, name: 'diabetes insulino dependente'),
+        ComorbidityEntity(id: 11, name: 'diabetes não-insulino dependente'),
+        ComorbidityEntity(id: 12, name: 'convulsão'),
+        ComorbidityEntity(id: 13, name: 'AVC'),
+        ComorbidityEntity(id: 14, name: 'doença Tireoide'),
+        ComorbidityEntity(id: 15, name: 'insuficiência cardíaca'),
+        ComorbidityEntity(id: 16, name: 'arritmia'),
+        ComorbidityEntity(id: 17, name: 'insuficiência renal'),
+        ComorbidityEntity(id: 18, name: 'doença valvar'),
+        ComorbidityEntity(id: 19, name: 'neoplasia'),
+        ComorbidityEntity(id: 20, name: 'DPOC'),
+        ComorbidityEntity(id: 21, name: 'asma Brônquica'),
+        ComorbidityEntity(id: 22, name: 'síndrome dispéptica'),
+        ComorbidityEntity(id: 23, name: 'doença vascular'),
       ]);
 
       await cubit.submitCollectionData();
@@ -162,6 +177,21 @@ void main() {
 
       expect(pacienteEnviado.comorbidityIds, contains(7));
       expect(pacienteEnviado.comorbidityIds, contains(8));
+      expect(pacienteEnviado.comorbidityIds, contains(9));
+      expect(pacienteEnviado.comorbidityIds, contains(10));
+      expect(pacienteEnviado.comorbidityIds, contains(11));
+      expect(pacienteEnviado.comorbidityIds, contains(12));
+      expect(pacienteEnviado.comorbidityIds, contains(13));
+      expect(pacienteEnviado.comorbidityIds, contains(14));
+      expect(pacienteEnviado.comorbidityIds, contains(15));
+      expect(pacienteEnviado.comorbidityIds, contains(16));
+      expect(pacienteEnviado.comorbidityIds, contains(17));
+      expect(pacienteEnviado.comorbidityIds, contains(18));
+      expect(pacienteEnviado.comorbidityIds, contains(19));
+      expect(pacienteEnviado.comorbidityIds, contains(20));
+      expect(pacienteEnviado.comorbidityIds, contains(21));
+      expect(pacienteEnviado.comorbidityIds, contains(22));
+      expect(pacienteEnviado.comorbidityIds, contains(23));
     });
   });
 }
