@@ -95,6 +95,26 @@ class DataCollectionCubit extends Cubit<DataCollectionState> {
   Future<List<ComorbidityEntity>> get comorbidities async {
     return [
       ComorbidityEntity(id: 0, name: 'Sem comorbidades'),
+
+      ComorbidityEntity(id: 7, name: 'doença coronariana'),
+      ComorbidityEntity(id: 8, name: 'infarto agudo do miocárdio'),
+      ComorbidityEntity(id: 9, name: 'dislipidemia'),
+      ComorbidityEntity(id: 10, name: 'diabetes insulino dependente'),
+      ComorbidityEntity(id: 11, name: 'diabetes não-insulino dependente'),
+      ComorbidityEntity(id: 12, name: 'convulsão'),
+      ComorbidityEntity(id: 13, name: 'AVC'),
+      ComorbidityEntity(id: 14, name: 'doença Tireoide'),
+      ComorbidityEntity(id: 15, name: 'insuficiência cardíaca'),
+      ComorbidityEntity(id: 16, name: 'arritmia'),
+      ComorbidityEntity(id: 17, name: 'insuficiência renal'),
+      ComorbidityEntity(id: 18, name: 'doença valvar'),
+      ComorbidityEntity(id: 19, name: 'neoplasia'),
+      ComorbidityEntity(id: 20, name: 'DPOC'),
+      ComorbidityEntity(id: 21, name: 'asma Brônquica'),
+      ComorbidityEntity(id: 22, name: 'síndrome dispéptica'),
+      ComorbidityEntity(id: 23, name: 'doença vascular'),
+
+      //vou adicionar aqui as novas comorbidades (não sei se é o melhor caminho)
       ...await GetIt.I.get<LocalDataSource>().getComorbidities(),
     ];
   }
