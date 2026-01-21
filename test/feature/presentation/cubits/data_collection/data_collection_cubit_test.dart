@@ -111,27 +111,27 @@ void main() {
 
       final listaFinal = await cubit.comorbidities;
 
-      expect(listaFinal.any((c) => c.name == 'Doença coronariana'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'Infarto agudo do miocárdio'),
+      expect(listaFinal.any((c) => c.name == 'doença coronariana'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'infarto agudo do miocárdio'),
           isTrue);
-      expect(listaFinal.any((c) => c.name == 'Dislipidemia'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'Diabetes insulino dependente'),
+      expect(listaFinal.any((c) => c.name == 'dislipidemia'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'diabetes insulino dependente'),
           isTrue);
       expect(
-          listaFinal.any((c) => c.name == 'Diabetes não-insulino dependente'),
+          listaFinal.any((c) => c.name == 'diabetes não-insulino dependente'),
           isTrue);
-      expect(listaFinal.any((c) => c.name == 'Convulsão'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'convulsão'), isTrue);
       expect(listaFinal.any((c) => c.name == 'AVC'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'Doença Tireoide'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'Insuficiência cardíaca'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'Arritmia'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'Insuficiência renal'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'Doença valvar'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'Neoplasia'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'doença Tireoide'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'insuficiência cardíaca'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'arritmia'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'insuficiência renal'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'doença valvar'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'neoplasia'), isTrue);
       expect(listaFinal.any((c) => c.name == 'DPOC'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'Asma Brônquica'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'Síndrome dispéptica'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'Doença vascular'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'asma Brônquica'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'síndrome dispéptica'), isTrue);
+      expect(listaFinal.any((c) => c.name == 'doença vascular'), isTrue);
     });
 
     test(
