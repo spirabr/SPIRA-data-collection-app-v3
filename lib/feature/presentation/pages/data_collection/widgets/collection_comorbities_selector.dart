@@ -176,7 +176,7 @@ class _ComorbiditiesDialogState extends State<ComorbiditiesDialog> {
         _tempSelectedComorbidities.removeWhere((element) => element.id == 0);
         if (_tempSelectedComorbidities.contains(comorbidity)) {
           _tempSelectedComorbidities.remove(comorbidity);
-        } else if (_tempSelectedComorbidities.length < 5) {
+        } else if (_tempSelectedComorbidities.length < 23) {
           _tempSelectedComorbidities.add(comorbidity);
         }
       }
