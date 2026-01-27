@@ -241,7 +241,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   Future<List<SmokingCessationEntity>> getSmokingCessationTimes() async {
     try {
       Dio dio = await getAuthenticatedDio();
-      Response response = await dio.get("/cessation-times");
+      Response response = await dio.get("/cessation-times/valid");
       CessationTimesResponseModel responseModel =
           CessationTimesResponseModel.fromJson(response.data);
       GetIt.I

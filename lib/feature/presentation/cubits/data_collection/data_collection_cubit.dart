@@ -125,7 +125,8 @@ class DataCollectionCubit extends Cubit<DataCollectionState> {
   }
 
   Future<List<SmokingCessationEntity>> get smokingCessations async {
-    return await GetIt.I.get<LocalDataSource>().getSmokingCessationTimes();
+     final lista = await GetIt.I.get<LocalDataSource>().getSmokingCessationTimes();
+     return lista;
   }
 
   Future<List<HealthPerceptionEntity>> get healthPerceptions async {

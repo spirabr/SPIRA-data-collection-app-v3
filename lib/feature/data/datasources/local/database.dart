@@ -162,6 +162,8 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> insertSmokingCessationTimes(
       List<SmokingCessationTimesCompanion> cessationTimesList) async {
+    await delete(smokingCessationTimes).go();
+
     await batch((batch) {
       batch.insertAllOnConflictUpdate(
           smokingCessationTimes, cessationTimesList);
