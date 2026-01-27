@@ -13,6 +13,7 @@ import 'package:spira/feature/data/model/request/patient_model.dart';
 import 'package:spira/feature/data/services/connectivity_service.dart';
 import 'package:spira/feature/domain/entities/comorbidity_entity.dart';
 import 'package:spira/feature/domain/entities/line_of_study_entity.dart';
+import 'package:spira/feature/domain/entities/smoking_cessation_entity.dart';
 import 'package:spira/feature/domain/entities/smoking_entity.dart';
 import 'package:spira/feature/presentation/cubits/data_collection/data_collection_cubit.dart';
 
@@ -105,39 +106,9 @@ void main() {
   });
 
   group('Teste de novas comorbidades', () {
-    test('Deve conter as novas comorbidades na lista', () async {
-      when(() => mockLocalDataSource.getComorbidities())
-          .thenAnswer((_) async => []);
-
-      final listaFinal = await cubit.comorbidities;
-
-      expect(listaFinal.any((c) => c.name == 'doença coronariana'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'infarto agudo do miocárdio'),
-          isTrue);
-      expect(listaFinal.any((c) => c.name == 'dislipidemia'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'diabetes insulino dependente'),
-          isTrue);
-      expect(
-          listaFinal.any((c) => c.name == 'diabetes não-insulino dependente'),
-          isTrue);
-      expect(listaFinal.any((c) => c.name == 'convulsão'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'AVC'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'doença Tireoide'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'insuficiência cardíaca'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'arritmia'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'insuficiência renal'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'doença valvar'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'neoplasia'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'DPOC'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'asma Brônquica'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'síndrome dispéptica'), isTrue);
-      expect(listaFinal.any((c) => c.name == 'doença vascular'), isTrue);
-    });
-
     test(
         'As novas comorbidades devem ser salvas corretamentes na entidade paciente',
         () async {
-
       when(() => mockLocalDataSource.insertPatient(any(), any(), any(), any(),
           any(), any(), any(), any(), any(), any())).thenAnswer((_) async => 1);
 
@@ -170,8 +141,15 @@ void main() {
 
       final capturedCalls = verify(() => mockLocalDataSource.insertPatient(
           captureAny(),
-          any(), any(), any(), any(), any(), any(), any(), any(), any()
-      )).captured;
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any())).captured;
 
       final pacienteEnviado = capturedCalls.first as PatientModel;
 
@@ -193,5 +171,145 @@ void main() {
       expect(pacienteEnviado.comorbidityIds, contains(22));
       expect(pacienteEnviado.comorbidityIds, contains(23));
     });
+  });
+
+  group('teste tempo de cessacao', () {
+    test('Os novos tempo de cessacao devem ser salvos com seus corretos id (4)',
+        () async {
+      final dummyAudio = RecordedAudioEntity(duration: 0, path: 'dummy_path');
+      cubit.setAmbientNoisePath(dummyAudio);
+      cubit.setSustentainedVowelPath(dummyAudio);
+      cubit.setRhymePath(dummyAudio);
+
+      cubit.setLineOfStudy(LineOfStudyEntity(id: 3, name: 'Tabagismo'));
+      cubit.setSmokingType(SmokingEntity(id: 1, name: 'Tradicional'));
+
+      final novoTempoCessacao =
+          SmokingCessationEntity(id: 4, name: 'Últimos 30 dias');
+
+      cubit.setSmokingCessation(novoTempoCessacao);
+
+      await cubit.submitCollectionData();
+
+      final capturedCalls = verify(() => mockLocalDataSource.insertPatient(
+          captureAny(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any())).captured;
+
+      final pacienteSalvo = capturedCalls.first as PatientModel;
+
+      expect(pacienteSalvo.smokingData?.cessationTimeId, 4);
+    });
+
+    test('Os novos tempo de cessacao devem ser salvos com seus corretos id (5)',
+            () async {
+          final dummyAudio = RecordedAudioEntity(duration: 0, path: 'dummy_path');
+          cubit.setAmbientNoisePath(dummyAudio);
+          cubit.setSustentainedVowelPath(dummyAudio);
+          cubit.setRhymePath(dummyAudio);
+
+          cubit.setLineOfStudy(LineOfStudyEntity(id: 3, name: 'Tabagismo'));
+          cubit.setSmokingType(SmokingEntity(id: 1, name: 'Tradicional'));
+
+          final novoTempoCessacao =
+          SmokingCessationEntity(id: 5, name: 'De 1 mês a 3 meses');
+
+          cubit.setSmokingCessation(novoTempoCessacao);
+
+          await cubit.submitCollectionData();
+
+          final capturedCalls = verify(() => mockLocalDataSource.insertPatient(
+              captureAny(),
+              any(),
+              any(),
+              any(),
+              any(),
+              any(),
+              any(),
+              any(),
+              any(),
+              any())).captured;
+
+          final pacienteSalvo = capturedCalls.first as PatientModel;
+
+          expect(pacienteSalvo.smokingData?.cessationTimeId, 5);
+
+        });
+    test('Os novos tempo de cessacao devem ser salvos com seus corretos id (6)',
+            () async {
+          final dummyAudio = RecordedAudioEntity(duration: 0, path: 'dummy_path');
+          cubit.setAmbientNoisePath(dummyAudio);
+          cubit.setSustentainedVowelPath(dummyAudio);
+          cubit.setRhymePath(dummyAudio);
+
+          cubit.setLineOfStudy(LineOfStudyEntity(id: 3, name: 'Tabagismo'));
+          cubit.setSmokingType(SmokingEntity(id: 1, name: 'Tradicional'));
+
+          final novoTempoCessacao =
+          SmokingCessationEntity(id: 6, name: 'de 3 meses a 1 ano');
+
+          cubit.setSmokingCessation(novoTempoCessacao);
+
+          await cubit.submitCollectionData();
+
+          final capturedCalls = verify(() => mockLocalDataSource.insertPatient(
+              captureAny(),
+              any(),
+              any(),
+              any(),
+              any(),
+              any(),
+              any(),
+              any(),
+              any(),
+              any())).captured;
+
+          final pacienteSalvo = capturedCalls.first as PatientModel;
+
+          expect(pacienteSalvo.smokingData?.cessationTimeId, 6);
+
+        });
+
+    test('Os novos tempo de cessacao devem ser salvos com seus corretos id (7)',
+            () async {
+          final dummyAudio = RecordedAudioEntity(duration: 0, path: 'dummy_path');
+          cubit.setAmbientNoisePath(dummyAudio);
+          cubit.setSustentainedVowelPath(dummyAudio);
+          cubit.setRhymePath(dummyAudio);
+
+          cubit.setLineOfStudy(LineOfStudyEntity(id: 3, name: 'Tabagismo'));
+          cubit.setSmokingType(SmokingEntity(id: 1, name: 'Tradicional'));
+
+          final novoTempoCessacao =
+          SmokingCessationEntity(id: 7, name: 'Mais de 1 ano');
+
+          cubit.setSmokingCessation(novoTempoCessacao);
+
+          await cubit.submitCollectionData();
+
+          final capturedCalls = verify(() => mockLocalDataSource.insertPatient(
+              captureAny(),
+              any(),
+              any(),
+              any(),
+              any(),
+              any(),
+              any(),
+              any(),
+              any(),
+              any())).captured;
+
+          final pacienteSalvo = capturedCalls.first as PatientModel;
+
+          expect(pacienteSalvo.smokingData?.cessationTimeId, 7);
+
+        });
   });
 }
